@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "Engine.h"
 
+#include "Brain_ActorComponent.h"
 
 
 // Sets default values
@@ -13,6 +14,7 @@ AFlyingPigFlipbookActor::AFlyingPigFlipbookActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Brain = CreateDefaultSubobject<UBrain_ActorComponent>("The Brain");
 }
 
 // Called when the game starts or when spawned
@@ -25,9 +27,6 @@ void AFlyingPigFlipbookActor::BeginPlay()
 		this,
 		&AFlyingPigFlipbookActor::OnPigHit
 	);
-
-	noseDetector = Cast<UChildActorComponent>(
-					paperFlipbookComponent->GetChildComponent(0));
 
 }
 

@@ -8,13 +8,9 @@
 #include "PaperFlipbookComponent.h"
 #include "Classes/Components/ChildActorComponent.h"
 
-
-//with the "class Brain" declare here
-//we do not need to include "Brain.h" here, but we can do that in cpp instead
-class Brain;	
-
-
 #include "FlyingPigFlipbookActor.generated.h"
+
+class UBrain_ActorComponent;
 
 UCLASS()
 class FLYINGPIGPROJECT_00_API AFlyingPigFlipbookActor : public AActor
@@ -23,9 +19,6 @@ class FLYINGPIGPROJECT_00_API AFlyingPigFlipbookActor : public AActor
 	
 private:
 	UPaperFlipbookComponent *paperFlipbookComponent;
-	UChildActorComponent *noseDetector;
-
-	Brain *m_Brain;
 
 
 public:	
@@ -33,7 +26,9 @@ public:
 	AFlyingPigFlipbookActor();
 
 	UChildActorComponent *getNoseDetector() { return noseDetector; }
-	Brain *getBrain() { return m_Brain; }
+
+	UPROPERTY(VisibleAnywhere)
+	UBrain_ActorComponent* Brain;
 
 protected:
 	// Called when the game starts or when spawned
