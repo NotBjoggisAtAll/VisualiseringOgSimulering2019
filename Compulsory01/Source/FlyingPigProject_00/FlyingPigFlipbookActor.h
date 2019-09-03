@@ -25,8 +25,6 @@ public:
 	// Sets default values for this actor's properties
 	AFlyingPigFlipbookActor();
 
-	UChildActorComponent *getNoseDetector() { return noseDetector; }
-
 	UPROPERTY(VisibleAnywhere)
 	UBrain_ActorComponent* Brain;
 
