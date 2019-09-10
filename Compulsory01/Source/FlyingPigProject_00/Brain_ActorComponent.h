@@ -14,11 +14,10 @@ struct Replay
 	TArray<double> states;
 	double reward;
 
-	Replay(double xr, double ballz, double ballvx, double r)
+	Replay(double DistUpZ, double DistDownZ, double r)
 	{
-		states.Add(xr);
-		states.Add(ballz);
-		states.Add(ballvx);
+		states.Add(DistUpZ);
+		states.Add(DistDownZ);
 		reward = r;
 	}
 };
@@ -44,6 +43,12 @@ class FLYINGPIGPROJECT_00_API UBrain_ActorComponent : public UActorComponent
 	int failCount = 0;						//count when the ball is dropped
 	float timer = 0;						//timer to keep track of balancing
 	float maxBalanceTime = 0;					//record time ball is kept balanced	
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), Category = "Q-Learning_NNet")
+		float MaxVelocity = 1.5f;		//max angle to apply to tilting each update
+									//make sure this is large enough so that the q value
+									//multiplied by it is enough to recover balance
+									//when the ball gets a good speed up
 
 
 	TArray<double> SoftMax(TArray<double> values);

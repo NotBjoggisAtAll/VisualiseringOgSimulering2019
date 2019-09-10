@@ -39,13 +39,14 @@ void AFlyingPigFlipbookActor::Tick(float DeltaTime)
 
 void AFlyingPigFlipbookActor::OnPigHit(UPrimitiveComponent * hitComp, AActor * otherActor, UPrimitiveComponent * otherComp, FVector NormalImpulse, const FHitResult & hit)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("HIT"))
+	bFailed = true;
 }
 
 void AFlyingPigFlipbookActor::Move(FVector direction, float DeltaTime)
 {
 	paperFlipbookComponent->AddForce(
-		direction * 10.0f
+		direction * DeltaTime
 	);
 }
 

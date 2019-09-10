@@ -45,6 +45,8 @@ public:
 			const FHitResult& hit
 		);
 
+	bool bFailed = false;
+
 	void Move(FVector direction, float DeltaTime);
 
 };
