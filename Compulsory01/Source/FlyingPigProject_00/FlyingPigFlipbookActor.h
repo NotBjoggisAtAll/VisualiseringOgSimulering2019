@@ -47,6 +47,8 @@ public:
 
 	bool bFailed = false;
 
+	FVector StartLocation;
+
 	void Move(FVector direction, float DeltaTime);
 
 };

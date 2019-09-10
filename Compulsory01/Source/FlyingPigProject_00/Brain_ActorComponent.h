@@ -14,10 +14,11 @@ struct Replay
 	TArray<double> states;
 	double reward;
 
-	Replay(double DistUpZ, double DistDownZ, double r)
+	Replay(double DistUpZ, double DistDownZ, double DistSpawn, double r)
 	{
 		states.Add(DistUpZ);
 		states.Add(DistDownZ);
+		states.Add(DistSpawn);
 		reward = r;
 	}
 };

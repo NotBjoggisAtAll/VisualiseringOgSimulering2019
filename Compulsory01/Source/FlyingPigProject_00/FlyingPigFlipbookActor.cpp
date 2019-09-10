@@ -28,6 +28,8 @@ void AFlyingPigFlipbookActor::BeginPlay()
 		&AFlyingPigFlipbookActor::OnPigHit
 	);
 
+	StartLocation = GetActorLocation();
+
 }
 
 // Called every frame
@@ -39,7 +41,6 @@ void AFlyingPigFlipbookActor::Tick(float DeltaTime)
 
 void AFlyingPigFlipbookActor::OnPigHit(UPrimitiveComponent * hitComp, AActor * otherActor, UPrimitiveComponent * otherComp, FVector NormalImpulse, const FHitResult & hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HIT"))
 	bFailed = true;
 }
 

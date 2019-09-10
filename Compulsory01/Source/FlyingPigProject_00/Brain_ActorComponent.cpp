@@ -21,7 +21,7 @@ void UBrain_ActorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ann = new ArtificialNN(2, 2, 2, 24, 0.2f);
+	ann = new ArtificialNN(3, 2, 3, 12, 0.2f);
 	pig = Cast<AFlyingPigFlipbookActor>(GetOwner());
 
 }
@@ -56,8 +56,13 @@ void UBrain_ActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 	GetWorld()->LineTraceSingleByChannel(HitDown, pig->GetActorLocation(), pig->GetActorLocation() + FVector(0, 0, -10000), ECC_WorldDynamic, params);
 
+
+	auto DistancePigStart = FVector::Distance(pig->GetActorLocation(), pig->StartLocation);
+
+
 	states.Add(HitUp.Distance);
 	states.Add(HitDown.Distance);
+	states.Add(DistancePigStart);
 
 	qs = SoftMax(ann->CalcOutput(states));
 	double maxQ = FMath::Max(qs);
@@ -87,16 +92,17 @@ void UBrain_ActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 	if (pig->bFailed == true)
 	{
-		reward = -5.0f;
+		reward = -10.0f;
 	}
 	else
 	{
-		reward = 0.1f;
+		reward = 0.01f;
 	}
 
 	Replay* lastMemory = new Replay(
 		HitUp.Distance,
 		HitDown.Distance,
+		DistancePigStart,
 		reward);
 
 	if (replayMemory.Num() > mCapacity)
@@ -139,7 +145,7 @@ void UBrain_ActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 		timer = 0;
 
-		GetOwner()->SetActorLocation(FVector(250, 0, 150));
+		GetOwner()->SetActorLocation(pig->StartLocation);
 		replayMemory.Empty();
 		pig->bFailed = false;
 		failCount++;
