@@ -94,6 +94,7 @@ void UBrain_ActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 	if (pig->bFailed == true)
 	{
+		reward = -1.0f;
 	}
 	else
 	{
