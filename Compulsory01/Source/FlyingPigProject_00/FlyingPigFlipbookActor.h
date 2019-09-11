@@ -18,12 +18,12 @@ class FLYINGPIGPROJECT_00_API AFlyingPigFlipbookActor : public AActor
 	GENERATED_BODY()
 	
 private:
-	UPaperFlipbookComponent *paperFlipbookComponent;
 
 
 public:	
 	// Sets default values for this actor's properties
 	AFlyingPigFlipbookActor();
+	UPaperFlipbookComponent *paperFlipbookComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	UBrain_ActorComponent* Brain;

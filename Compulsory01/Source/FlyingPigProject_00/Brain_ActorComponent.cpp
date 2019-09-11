@@ -21,7 +21,7 @@ void UBrain_ActorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ann = new ArtificialNN(3, 2, 3, 12, 0.2f);
+	ann = new ArtificialNN(4, 2, 3, 24, 0.4f);
 	pig = Cast<AFlyingPigFlipbookActor>(GetOwner());
 
 }
@@ -52,9 +52,9 @@ void UBrain_ActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(pig);
 
-	GetWorld()->LineTraceSingleByChannel(HitUp , pig->GetActorLocation(), pig->GetActorLocation() + FVector(0, 0, 10000),ECC_WorldDynamic,params);
+	GetWorld()->LineTraceSingleByChannel(HitUp, pig->GetActorLocation(), pig->GetActorLocation() + FVector(0, 0, 10000), ECC_WorldStatic, params);
 
-	GetWorld()->LineTraceSingleByChannel(HitDown, pig->GetActorLocation(), pig->GetActorLocation() + FVector(0, 0, -10000), ECC_WorldDynamic, params);
+	GetWorld()->LineTraceSingleByChannel(HitDown, pig->GetActorLocation(), pig->GetActorLocation() + FVector(0, 0, -10000), ECC_WorldStatic, params);
 
 
 	auto DistancePigStart = FVector::Distance(pig->GetActorLocation(), pig->StartLocation);
@@ -63,6 +63,7 @@ void UBrain_ActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	states.Add(HitUp.Distance);
 	states.Add(HitDown.Distance);
 	states.Add(DistancePigStart);
+	states.Add(pig->GetVelocity().Z);
 
 	qs = SoftMax(ann->CalcOutput(states));
 	double maxQ = FMath::Max(qs);
@@ -87,22 +88,23 @@ void UBrain_ActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		message
 	);
 
-	pig->Move(FVector(0,0,1) * impulse,DeltaTime);
+	//if (maxQIndex == 1)
+		pig->Move(FVector(0, 0, 1) * impulse, DeltaTime);
 
 
 	if (pig->bFailed == true)
 	{
-		reward = -10.0f;
 	}
 	else
 	{
-		reward = 0.01f;
+		reward = 0.1f;
 	}
 
 	Replay* lastMemory = new Replay(
 		HitUp.Distance,
 		HitDown.Distance,
 		DistancePigStart,
+		pig->GetVelocity().Z,
 		reward);
 
 	if (replayMemory.Num() > mCapacity)
@@ -146,6 +148,8 @@ void UBrain_ActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		timer = 0;
 
 		GetOwner()->SetActorLocation(pig->StartLocation);
+		pig->paperFlipbookComponent->SetSimulatePhysics(false);
+		pig->paperFlipbookComponent->SetSimulatePhysics(true);
 		replayMemory.Empty();
 		pig->bFailed = false;
 		failCount++;
