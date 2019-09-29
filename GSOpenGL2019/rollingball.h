@@ -8,7 +8,7 @@ class RollingBall : public Sphere
 public:
     RollingBall();
 
-    void move();
+    void move(VisualObject *plane);
 
     void CalculateBarycentricCoordinates(VisualObject *plane);
 private:
@@ -17,6 +17,8 @@ private:
     gsl::Vector3D Acceleration{};
 
     gsl::Vector3D LastLocation{};
+
+    gsl::Vector3D CurrentTriangleNormal{};
 };
 
 #endif // ROLLINGBALL_H

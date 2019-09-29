@@ -132,7 +132,7 @@ void RenderWindow::render()
 
     mCurrentCamera->update();
 
-    static_cast<RollingBall*>(mPlayer)->CalculateBarycentricCoordinates(mSurface);
+    static_cast<RollingBall*>(mPlayer)->move(mSurface);
 
 
     mTimeStart.restart(); //restart FPS clock

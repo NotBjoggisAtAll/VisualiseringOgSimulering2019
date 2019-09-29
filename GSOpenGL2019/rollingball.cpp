@@ -5,9 +5,11 @@ RollingBall::RollingBall() : Sphere(3)
 
 }
 
-void RollingBall::move()
+void RollingBall::move(VisualObject* plane)
 {
-
+    CalculateBarycentricCoordinates(plane);
+    Velocity = {0.01,0,0};
+    mMatrix.translate(Velocity);
 }
 
 void RollingBall::CalculateBarycentricCoordinates(VisualObject* plane)
@@ -30,6 +32,11 @@ void RollingBall::CalculateBarycentricCoordinates(VisualObject* plane)
             float playerTempPos = (pos1.y*bar.x + pos2.y*bar.y + pos3.y*bar.z) + 1; //1 = radius
             LastLocation = gsl::Vector3D(mMatrix.getPosition().x,playerTempPos,mMatrix.getPosition().z);
             mMatrix.setPosition(LastLocation);
+
+        auto normal = gsl::Vector3D::cross(pos2 - pos1, pos3 - pos1);
+        normal.normalize();
+        CurrentTriangleNormal = normal;
+        qDebug() << CurrentTriangleNormal;
         }
     }
     mMatrix.setPosition(LastLocation);
