@@ -12,13 +12,9 @@ void RollingBall::move(VisualObject* plane)
     //Gravitasjon vektoren
     gsl::Vector3D gravityVector{0,-9.81f,0};
 
-    float vinkelGresk = gsl::Vector3D::dot(normal, -gravityVector);
-    gsl::Vector3D N = normal * vinkelGresk;
+    gsl::Vector3D N = normal * gsl::Vector3D::dot(normal, -gravityVector);
 
-
-
-    Acceleration = (N + gravityVector)*(1.f/mass);
-    //   qDebug() << Acceleration;
+    Acceleration = (N + gravityVector);
     Velocity += Acceleration * 0.005f * (1.f/60.f);
     mMatrix.translate(Velocity);
 }
@@ -56,10 +52,11 @@ gsl::Vector3D RollingBall::CalculateBarycentricCoordinates(VisualObject* plane)
             {
                 if(normal != lastPlaneNormal)
                 {
-                    auto newVelocity = Velocity - normal * (gsl::Vector3D::dot(Velocity, normal)*1);
+                    auto newVelocity = Velocity - normal * (gsl::Vector3D::dot(Velocity, normal)*2);
                     Velocity = newVelocity;
                 }
             }
+
             lastPlaneNormal = normal;
             return normal;
         }
