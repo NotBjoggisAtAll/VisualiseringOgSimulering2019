@@ -78,6 +78,8 @@ public:
     GLfloat x;
     GLfloat y;
     GLfloat z;
+    bool operator ==(const Vector3D &rhs);
+    bool operator !=(const Vector3D &rhs);
 };
 
 } //namespace

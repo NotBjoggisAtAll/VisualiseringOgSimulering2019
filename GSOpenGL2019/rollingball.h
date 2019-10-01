@@ -10,7 +10,7 @@ public:
 
     void move(VisualObject *plane);
 
-    void CalculateBarycentricCoordinates(VisualObject *plane);
+    gsl::Vector3D CalculateBarycentricCoordinates(VisualObject *plane);
 private:
 
     gsl::Vector3D Velocity{};
@@ -18,7 +18,12 @@ private:
 
     gsl::Vector3D LastLocation{};
 
-    gsl::Vector3D CurrentTriangleNormal{};
+    gsl::Vector3D lastPlaneNormal{0};
+
+
+
+    float radius = 1;
+    float mass;
 };
 
 #endif // ROLLINGBALL_H

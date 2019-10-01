@@ -1,18 +1,29 @@
-#include "rollingball.h"
+﻿#include "rollingball.h"
 
-RollingBall::RollingBall() : Sphere(3)
+RollingBall::RollingBall() : Sphere(3), mass(1.f)
 {
 
 }
 
 void RollingBall::move(VisualObject* plane)
 {
-    CalculateBarycentricCoordinates(plane);
-    Velocity = {0.01,0,0};
+    auto normal = CalculateBarycentricCoordinates(plane);
+
+    //Gravitasjon vektoren
+    gsl::Vector3D gravityVector{0,-9.81f,0};
+
+    float vinkelGresk = gsl::Vector3D::dot(normal, -gravityVector);
+    gsl::Vector3D N = normal * vinkelGresk;
+
+
+
+    Acceleration = (N + gravityVector)*(1.f/mass);
+    //   qDebug() << Acceleration;
+    Velocity += Acceleration * 0.005f * (1.f/60.f);
     mMatrix.translate(Velocity);
 }
 
-void RollingBall::CalculateBarycentricCoordinates(VisualObject* plane)
+gsl::Vector3D RollingBall::CalculateBarycentricCoordinates(VisualObject* plane)
 {
     for (unsigned int i=0; i<plane->mIndices.size(); i+=3)
     {
@@ -28,16 +39,30 @@ void RollingBall::CalculateBarycentricCoordinates(VisualObject* plane)
 
         if(bar.x>=0 && bar.x<=1 && bar.y>=0 && bar.y<=1 && bar.z>=0 && bar.z <=1)
         {
+            gsl::Vector3D playerTempPos = (pos1 *bar.x + pos2*bar.y + pos3*bar.z);
 
-            float playerTempPos = (pos1.y*bar.x + pos2.y*bar.y + pos3.y*bar.z) + 1; //1 = radius
-            LastLocation = gsl::Vector3D(mMatrix.getPosition().x,playerTempPos,mMatrix.getPosition().z);
-            mMatrix.setPosition(LastLocation);
+            gsl::Vector3D pointToBall = mMatrix.getPosition() - playerTempPos;
 
-        auto normal = gsl::Vector3D::cross(pos2 - pos1, pos3 - pos1);
-        normal.normalize();
-        CurrentTriangleNormal = normal;
-        qDebug() << CurrentTriangleNormal;
+
+            gsl::Vector3D normal = gsl::Vector3D::cross(pos3 - pos1, pos2 - pos1);
+            normal.normalize();
+
+            float closestPoint = gsl::Vector3D::dot(pointToBall, normal);
+
+            if(closestPoint > radius) { //Radius
+                normal = {0};
+            }
+            else
+            {
+                if(normal != lastPlaneNormal)
+                {
+                    auto newVelocity = Velocity - normal * (gsl::Vector3D::dot(Velocity, normal)*1);
+                    Velocity = newVelocity;
+                }
+            }
+            lastPlaneNormal = normal;
+            return normal;
         }
     }
-    mMatrix.setPosition(LastLocation);
+    return {0};
 }

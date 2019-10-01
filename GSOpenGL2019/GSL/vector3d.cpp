@@ -33,6 +33,16 @@ namespace gsl
         return *this;
     }
 
+    bool Vector3D::operator==(const Vector3D &rhs)
+       {
+           return (x==rhs.x && y==rhs.y && z==rhs.z);
+       }
+
+       bool Vector3D::operator!=(const Vector3D &rhs)
+       {
+           return (x!=rhs.x || y!=rhs.y || z!=rhs.z);
+       }
+
 
     Vector3D Vector3D::operator+(const Vector3D &rhs) const
     {
