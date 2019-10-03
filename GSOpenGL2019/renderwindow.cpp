@@ -115,13 +115,13 @@ void RenderWindow::init()
 
     mPlayer = new RollingBall();
     mPlayer->init();
-    mPlayer->mMatrix.setPosition(5,10,2.5);
+    mPlayer->mMatrix.setPosition(5,8,2.5);
     mVisualObjects.push_back(mPlayer);
 
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(-1.f, -.5f, 2.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(2.8f, -1.5f, 2.8f));
 }
 
 
@@ -131,6 +131,7 @@ void RenderWindow::render()
     handleInput();
 
     mCurrentCamera->update();
+
 
     static_cast<RollingBall*>(mPlayer)->move(mSurface);
 

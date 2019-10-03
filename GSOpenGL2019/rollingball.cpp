@@ -10,7 +10,6 @@ void RollingBall::move(VisualObject* plane)
     auto normal = CalculateBarycentricCoordinates(plane);
 
     //Gravitasjon vektoren
-    gsl::Vector3D gravityVector{0,-9.81f,0};
 
     gsl::Vector3D N = normal * gsl::Vector3D::dot(normal, -gravityVector);
 
@@ -35,7 +34,7 @@ gsl::Vector3D RollingBall::CalculateBarycentricCoordinates(VisualObject* plane)
 
         if(bar.x>=0 && bar.x<=1 && bar.y>=0 && bar.y<=1 && bar.z>=0 && bar.z <=1)
         {
-            gsl::Vector3D playerTempPos = (pos1 *bar.x + pos2*bar.y + pos3*bar.z);
+            gsl::Vector3D playerTempPos = (pos1 * bar.x + pos2*bar.y + pos3*bar.z);
 
             gsl::Vector3D pointToBall = mMatrix.getPosition() - playerTempPos;
 
@@ -50,13 +49,25 @@ gsl::Vector3D RollingBall::CalculateBarycentricCoordinates(VisualObject* plane)
             }
             else
             {
-                if(normal != lastPlaneNormal)
-                {
-                    auto newVelocity = Velocity - normal * (gsl::Vector3D::dot(Velocity, normal)*2);
-                    Velocity = newVelocity;
-                }
+               float distance = radius - closestPoint;
+               if(distance > 0.002f)
+               {
+                   mMatrix.translate(normal * (radius - closestPoint));
+               }
             }
+            if(lastPlaneNormal == gsl::Vector3D(0))  //Kommer fra lufta
+            {
+                gsl::Vector3D N = normal * gsl::Vector3D::dot(normal, -gravityVector);
+                Velocity = (gravityVector+N).normalized() * gsl::Vector3D::dot(Velocity, (gravityVector+N).normalized());
 
+            }
+            else if(normal != lastPlaneNormal)
+            {
+                gsl::Vector3D tangentNormal = normal + lastPlaneNormal;
+                tangentNormal.normalize();
+                auto newVelocity = Velocity - tangentNormal * (gsl::Vector3D::dot(Velocity, tangentNormal)*2);
+                Velocity = newVelocity;
+            }
             lastPlaneNormal = normal;
             return normal;
         }

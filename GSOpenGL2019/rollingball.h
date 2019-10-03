@@ -21,8 +21,9 @@ private:
     gsl::Vector3D lastPlaneNormal{0};
 
 
+    gsl::Vector3D gravityVector{0,-9.81f,0};
 
-    float radius = 1;
+    float radius = 1.f;
     float mass;
 };
 
